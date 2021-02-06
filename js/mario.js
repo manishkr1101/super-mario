@@ -25,5 +25,6 @@ class Mario extends Entity {
         const sprite = new Sprite(spriteImg, 651, 3, 16, 19);
         super(sprite, 'mario',  posX, posY, width, height)
         this.velX = 4
+        this.velY = 0
     }
 }

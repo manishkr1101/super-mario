@@ -1,9 +1,12 @@
+const groundOffset = 200
 
 const render = {
     init(gameObj) {
         // drawSky
         gameObj.tool.fillStyle = "#845ec2"
         gameObj.tool.fillRect(0, 0, window.innerWidth, window.innerHeight);
+        gameObj.tool.fillStyle = "#eb5e0b"
+        gameObj.tool.fillRect(0, 200, window.innerWidth, window.innerHeight - 200);
         const mario = gameObj.entities.mario
         gameObj.tool.drawImage(
             mario.sprite.img,
@@ -21,6 +24,8 @@ const render = {
         gameObj.tool.clearRect(0, 0, window.innerWidth, window.innerHeight);
         gameObj.tool.fillStyle = "#845ec2"
         gameObj.tool.fillRect(0, 0, window.innerWidth, window.innerHeight);
+        gameObj.tool.fillStyle = "#eb5e0b"
+        gameObj.tool.fillRect(0, 200, window.innerWidth, window.innerHeight - 200);
         const mario = gameObj.entities.mario
         gameObj.tool.drawImage(
             mario.sprite.img,
@@ -46,8 +51,8 @@ class Game {
         const gameObj = { tool, canvas, entities }
 
         preload().then(() => {
-            entities.mario = new Mario(spriteSheetImage, 175, 175, 16 * 4, 19 * 4)
-            // tool.scale(3,3)
+            entities.mario = new Mario(spriteSheetImage, 175, 0, 16, 19)
+            tool.scale(3,3)
             render.init(gameObj)
 
             input.init();
@@ -61,6 +66,7 @@ class Game {
     update(gameObj) {
         function gameloop() {
             input.update(gameObj)
+            physics.update(gameObj)
             render.update(gameObj)
             requestAnimationFrame(gameloop)
         }
