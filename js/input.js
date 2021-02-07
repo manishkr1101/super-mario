@@ -18,14 +18,19 @@ const input = {
         let mario = gameObj.entities.mario
         if (this.isDown('ArrowLeft') || this.isDown('KeyA')) {
             mario.posX -= mario.velX
+            mario.currentDirection = "left"
+            mario.currentState = mario.states.walkingAnim
         }
         else if (this.isDown('ArrowRight') || this.isDown('KeyD')) {
             mario.posX += mario.velX
+            mario.currentDirection = "right"
+            mario.currentState = mario.states.walkingAnim
         }
         
         if (this.isDown("Space")) {
             if (mario.velY == 1.1) {
-                mario.velY -= 10;
+                mario.velY -= 12;
+                mario.currentState = mario.states.jumpingAnim
             }
         }
     },

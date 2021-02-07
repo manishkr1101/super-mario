@@ -1,12 +1,12 @@
-const groundOffset = 200
+const groundOffset = 193
 
 const render = {
     init(gameObj) {
         // drawSky
-        gameObj.tool.fillStyle = "#845ec2"
+        gameObj.tool.fillStyle = "#3498db"
         gameObj.tool.fillRect(0, 0, window.innerWidth, window.innerHeight);
         gameObj.tool.fillStyle = "#eb5e0b"
-        gameObj.tool.fillRect(0, 200, window.innerWidth, window.innerHeight - 200);
+        gameObj.tool.fillRect(0, groundOffset, window.innerWidth, window.innerHeight - groundOffset);
         const mario = gameObj.entities.mario
         gameObj.tool.drawImage(
             mario.sprite.img,
@@ -19,13 +19,15 @@ const render = {
             mario.width,
             mario.height
         )
+
     },
     update(gameObj) {
         gameObj.tool.clearRect(0, 0, window.innerWidth, window.innerHeight);
-        gameObj.tool.fillStyle = "#845ec2"
+        gameObj.tool.fillStyle = "#3498db"
         gameObj.tool.fillRect(0, 0, window.innerWidth, window.innerHeight);
-        gameObj.tool.fillStyle = "#eb5e0b"
-        gameObj.tool.fillRect(0, 200, window.innerWidth, window.innerHeight - 200);
+        gameObj.levelBuilder.stock(gameObj)
+        gameObj.levelBuilder.render(gameObj)
+
         const mario = gameObj.entities.mario
         gameObj.tool.drawImage(
             mario.sprite.img,
@@ -38,6 +40,7 @@ const render = {
             mario.width,
             mario.height
         )
+        
     }
 }
 
@@ -47,11 +50,19 @@ class Game {
         canvas.height = window.innerHeight;
         canvas.width = window.innerWidth;
         const tool = canvas.getContext("2d")
-        const entities = {}
-        const gameObj = { tool, canvas, entities }
+        const entities = {scenery: []}
+        const gameObj = { 
+            tool, 
+            canvas, 
+            entities, 
+            animFrame: 0,
+            levelBuilder : new LevelBuilder(levelOne)
+        }
+        
 
         preload().then(() => {
             entities.mario = new Mario(spriteSheetImage, 175, 0, 16, 19)
+            entities.ground = new Ground(spriteSheetImage, 0, groundOffset, 16, 16)
             tool.scale(3,3)
             render.init(gameObj)
 
@@ -66,8 +77,10 @@ class Game {
     update(gameObj) {
         function gameloop() {
             input.update(gameObj)
+            animation.update(gameObj)
             physics.update(gameObj)
             render.update(gameObj)
+            gameObj.animFrame++
             requestAnimationFrame(gameloop)
         }
         gameloop()
@@ -79,5 +92,7 @@ class Game {
 }
 const game = new Game()
 game.init()
+
+const audio = new Audio('assets/audio/music/mario_theme.mp3')
 
 

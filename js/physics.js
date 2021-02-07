@@ -9,9 +9,10 @@ const physics = {
         entity.posY += entity.velY
     },
     checkCollision(entity) {
-        if(entity.posY + entity.height >= 200 && entity.velY > 0) {
-            entity.posY = 200 - entity.height-1
+        if(entity.posY + entity.height >= groundOffset && entity.velY > 0) {
+            entity.posY = groundOffset - entity.height-1
             entity.velY = 0
+            entity.currentState = entity.states.standingAnim
         }
     }
 }
