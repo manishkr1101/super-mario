@@ -76,7 +76,6 @@ class Game {
 
         preload().then(() => {
             entities.mario = new Mario(spriteSheetImage, 175, 0, 16, 19)
-            entities.ground = new Ground(spriteSheetImage, 0, groundOffset, 16, 16)
             tool.scale(3,3)
             render.init(gameObj)
 
@@ -109,4 +108,10 @@ game.init()
 
 // const audio = new Audio('assets/audio/music/mario_theme.mp3')
 
-
+document.addEventListener("visibilitychange", function() {
+    if (document.visibilityState === 'visible') {
+      
+    } else {
+      debugger
+    }
+  });

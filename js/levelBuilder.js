@@ -54,7 +54,7 @@ class LevelBuilder {
         );
         this.sceneryEntities.push(
             new Castle(
-                tilesetImage, level.castle[0], level.castle[1], level.castle[2], level.castle[3]),
+                castleImage, level.castle[0], level.castle[1], level.castle[2], level.castle[3]),
         );
     }
 
