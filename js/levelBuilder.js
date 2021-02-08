@@ -65,18 +65,24 @@ class LevelBuilder {
     }
 
     render(gameObj) {
+        const camera = gameObj.camera
         this.sceneryEntities.forEach(entity => {
-            gameObj.tool.drawImage(
-                entity.sprite.img,
-                entity.sprite.srcX,
-                entity.sprite.srcY,
-                entity.sprite.srcW,
-                entity.sprite.srcH,
-                entity.posX,
-                entity.posY,
-                entity.width,
-                entity.height
-            )
+            const entityEnd = entity.posX + entity.width
+            const frameEnd = camera.start + camera.width
+            if (entityEnd >= camera.start && entity.posX <= frameEnd) {
+                gameObj.tool.drawImage(
+                    entity.sprite.img,
+                    entity.sprite.srcX,
+                    entity.sprite.srcY,
+                    entity.sprite.srcW,
+                    entity.sprite.srcH,
+                    entity.posX - camera.start,
+                    entity.posY,
+                    entity.width,
+                    entity.height
+                )
+            }
+
         })
     }
 }

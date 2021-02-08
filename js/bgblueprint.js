@@ -71,7 +71,7 @@ class Flagpole extends Entity {
 }
 class Castle extends Entity {
     constructor(tileset, xPos, yPos, width, height) {
-        const sprite = new Sprite(tileset, 0, 0, 80, 80);
+        const sprite = new Sprite(castleImage, 0, 0, 80, 80);
 
         super(sprite, 'flag', xPos, yPos, width, height);
     }

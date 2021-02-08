@@ -8,6 +8,7 @@ const render = {
         gameObj.tool.fillStyle = "#eb5e0b"
         gameObj.tool.fillRect(0, groundOffset, window.innerWidth, window.innerHeight - groundOffset);
         const mario = gameObj.entities.mario
+        gameObj.levelBuilder.stock(gameObj)
         gameObj.tool.drawImage(
             mario.sprite.img,
             mario.sprite.srcX,
@@ -22,10 +23,11 @@ const render = {
 
     },
     update(gameObj) {
+        this.updateFrame(gameObj)
         gameObj.tool.clearRect(0, 0, window.innerWidth, window.innerHeight);
         gameObj.tool.fillStyle = "#3498db"
         gameObj.tool.fillRect(0, 0, window.innerWidth, window.innerHeight);
-        gameObj.levelBuilder.stock(gameObj)
+        
         gameObj.levelBuilder.render(gameObj)
 
         const mario = gameObj.entities.mario
@@ -35,12 +37,19 @@ const render = {
             mario.sprite.srcY,
             mario.sprite.srcW,
             mario.sprite.srcH,
-            mario.posX,
+            mario.posX - gameObj.camera.start,
             mario.posY,
             mario.width,
             mario.height
         )
         
+    },
+    updateFrame(gameObj) {
+        const center = gameObj.entities.mario.posX + gameObj.entities.mario.width/2;
+        const dist = window.innerWidth/9;
+        if(center < gameObj.camera.start + 2*dist) {
+            gameObj.camera.start = Math.max(center - dist, 0);
+        }
     }
 }
 
@@ -51,12 +60,17 @@ class Game {
         canvas.width = window.innerWidth;
         const tool = canvas.getContext("2d")
         const entities = {scenery: []}
+        const camera = {
+            start: 0,
+            width: window.innerWidth
+        }
         const gameObj = { 
             tool, 
             canvas, 
             entities, 
             animFrame: 0,
-            levelBuilder : new LevelBuilder(levelOne)
+            levelBuilder : new LevelBuilder(levelOne),
+            camera
         }
         
 
@@ -93,6 +107,6 @@ class Game {
 const game = new Game()
 game.init()
 
-const audio = new Audio('assets/audio/music/mario_theme.mp3')
+// const audio = new Audio('assets/audio/music/mario_theme.mp3')
 
 

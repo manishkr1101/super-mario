@@ -18,6 +18,7 @@ const input = {
         let mario = gameObj.entities.mario
         if (this.isDown('ArrowLeft') || this.isDown('KeyA')) {
             mario.posX -= mario.velX
+            mario.posX = Math.max(mario.posX, 0)
             mario.currentDirection = "left"
             mario.currentState = mario.states.walkingAnim
         }
@@ -26,10 +27,14 @@ const input = {
             mario.currentDirection = "right"
             mario.currentState = mario.states.walkingAnim
         }
+
+        if(this.isDown('KeyX')) {
+            mario.velX += 1 // hack
+        }
         
         if (this.isDown("Space")) {
             if (mario.velY == 1.1) {
-                mario.velY -= 12;
+                mario.velY -= 14;
                 mario.currentState = mario.states.jumpingAnim
             }
         }
