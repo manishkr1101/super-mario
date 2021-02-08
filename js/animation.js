@@ -5,5 +5,8 @@ const animation = {
         gameObj.entities.goombas.forEach(goomba => {
             goomba.currentState.animation(gameObj)
         })
+        gameObj.entities.koopas.forEach(koopa => {
+            koopa.currentState.animation(gameObj)
+        })
     }
 }

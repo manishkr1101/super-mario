@@ -3,9 +3,11 @@ const physics = {
         // this.checkCollision(gameObj.entities.mario)
         this.gravity(gameObj.entities.mario)
         gameObj.entities.goombas.forEach(g => this.gravity(g))
+        gameObj.entities.koopas.forEach(k => this.gravity(k))
         this.bgEntityCollision(gameObj)
         this.checkFallign(gameObj.entities.mario)
         gameObj.entities.goombas.forEach(g => this.checkFallign(g))
+        gameObj.entities.koopas.forEach(k => this.checkFallign(k))
     },
     gravity(entity) {
         entity.velY += 1.1
@@ -18,6 +20,7 @@ const physics = {
         goombas.forEach(g => {
             this.bgCollision(g, gameObj)
         })
+        gameObj.entities.koopas.forEach(k => this.bgCollision(k, gameObj))
     },
     checkCollision(entity) {
         if (entity.posY + entity.height >= groundOffset && entity.velY > 0) {
@@ -30,7 +33,7 @@ const physics = {
         if(entity.posY > 250) {
             entity.posY = 250
             if(entity.type == 'mario') {
-                alert("Game Over")
+                game.reset()
             }
             
         }
@@ -78,14 +81,14 @@ const physics = {
         // left
         if(entity.posX <= scene.posX && entity.posY >= scene.posY) {
             entity.posX = scene.posX - entity.width
-            if(entity.type == 'goomba') {
+            if(entity.type == 'goomba' || entity.type == "koopa") {
                 entity.currentDirection = entity.currentDirection=="right"?"left":"right";
             }
         }
         // right 
         if(entity.posX >= scene.posX && entity.posY >= scene.posY) {
             entity.posX = scene.posX + scene.width
-            if(entity.type == 'goomba') {
+            if(entity.type == 'goomba' || entity.type == "koopa") {
                 entity.currentDirection = entity.currentDirection=="right"?"left":"right";
             }
         }

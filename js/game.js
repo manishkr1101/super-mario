@@ -25,7 +25,7 @@ const render = {
     update(gameObj) {
         this.updateFrame(gameObj)
         gameObj.tool.clearRect(0, 0, window.innerWidth, window.innerHeight);
-        gameObj.tool.fillStyle = "#3498db"
+        gameObj.tool.fillStyle = "#63adff"
         gameObj.tool.fillRect(0, 0, window.innerWidth, window.innerHeight);
 
         gameObj.levelBuilder.render(gameObj)
@@ -35,6 +35,10 @@ const render = {
 
         gameObj.entities.goombas.forEach(goomba => {
             this.drawEntity(camera, goomba, gameObj)
+        })
+
+        gameObj.entities.koopas.forEach(koopa => {
+            this.drawEntity(camera, koopa, gameObj)
         })
 
     },
@@ -59,9 +63,7 @@ const render = {
     updateFrame(gameObj) {
         const center = gameObj.entities.mario.posX + gameObj.entities.mario.width / 2;
         const dist = window.innerWidth / 9;
-        if (center < gameObj.camera.start + 2 * dist) {
-            gameObj.camera.start = Math.max(center - dist, 0);
-        }
+        gameObj.camera.start = Math.max(center - dist, 0);
     }
 }
 
@@ -82,15 +84,23 @@ class Game {
             entities,
             animFrame: 0,
             levelBuilder: new LevelBuilder(levelOne),
-            camera
+            camera,
+            reset: this.reset
         }
 
         entities.goombas = []
+        entities.koopas = []
         preload().then(() => {
             entities.mario = new Mario(spriteSheetImage, 175, 0, 16, 19)
+            entities.mario.posX = 800
             levelOne.goombas.forEach(coord => {
                 entities.goombas.push(
                     new Goomba(spriteSheetImage, ...coord)
+                )
+            });
+            levelOne.koopas.forEach(coord => {
+                entities.koopas.push(
+                    new Koopa(spriteSheetImage, ...coord)
                 )
             });
             console.log(entities)

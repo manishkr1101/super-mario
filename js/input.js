@@ -1,3 +1,11 @@
+const sounds = {
+    jump: new Audio("assets/audio/sounds/jump.wav")
+}
+
+for(let key in sounds) {
+    sounds[key].volume = 0.1
+}
+
 const input = {
     down: {},
     pressed: {},
@@ -36,6 +44,7 @@ const input = {
             if (mario.velY == 1.1) {
                 mario.velY -= 14;
                 mario.currentState = mario.states.jumpingAnim
+                sounds.jump.play()
             }
         }
     },
