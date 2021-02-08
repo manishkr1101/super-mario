@@ -2,12 +2,22 @@ const physics = {
     update(gameObj) {
         // this.checkCollision(gameObj.entities.mario)
         this.gravity(gameObj.entities.mario)
-        this.bgCollision(gameObj)
+        gameObj.entities.goombas.forEach(g => this.gravity(g))
+        this.bgEntityCollision(gameObj)
         this.checkFallign(gameObj.entities.mario)
+        gameObj.entities.goombas.forEach(g => this.checkFallign(g))
     },
     gravity(entity) {
         entity.velY += 1.1
         entity.posY += entity.velY
+    },
+    bgEntityCollision(gameObj) {
+        const mario = gameObj.entities.mario
+        const goombas = gameObj.entities.goombas
+        this.bgCollision(mario, gameObj)
+        goombas.forEach(g => {
+            this.bgCollision(g, gameObj)
+        })
     },
     checkCollision(entity) {
         if (entity.posY + entity.height >= groundOffset && entity.velY > 0) {
@@ -26,22 +36,25 @@ const physics = {
         }
 
     },
-    bgCollision(gameObj) {
-        const mario = gameObj.entities.mario
+    bgCollision(entity, gameObj) {
         gameObj.entities.scenery.forEach(scene => {
             if (scene.type == 'pipe' || scene.type == 'stair') {
-                if (this.checkRectCollision(scene, mario)) {
-                    this.handleDirec(scene, mario)
+                if (this.checkRectCollision(scene, entity)) {
+                    this.handleDirec(scene, entity)
+                    
                 }
                 
             }
-            else if(scene.type == 'ground' && this.checkRectCollision(scene, mario)) {
-                if(mario.posY < scene.posY && mario.posX + mario.width > scene.posX && scene.posX + scene.posY > mario.posX && mario.velY >= 0) {
-                    mario.posY = scene.posY - mario.height 
-                    mario.currentState = mario.states.standingAnim
-                    mario.velY = 1.1
+            if(scene.type == 'ground' && this.checkRectCollision(scene, entity)) {
+                if(entity.posY < scene.posY && entity.posX + entity.width > scene.posX && scene.posX + scene.posY > entity.posX && entity.velY >= 0) {
+                    entity.posY = scene.posY - entity.height 
+                    entity.velY = 1.1
+                    if(entity.type == "mario") {
+                        entity.currentState = entity.states.standingAnim
+                    }
                 }
             }
+            
 
         })
     },
@@ -61,21 +74,27 @@ const physics = {
         }
         return false;
     },
-    handleDirec(scene, mario) {
+    handleDirec(scene, entity) {
         // left
-        if(mario.posX <= scene.posX && mario.posY >= scene.posY) {
-            mario.posX = scene.posX - mario.width
+        if(entity.posX <= scene.posX && entity.posY >= scene.posY) {
+            entity.posX = scene.posX - entity.width
+            if(entity.type == 'goomba') {
+                entity.currentDirection = entity.currentDirection=="right"?"left":"right";
+            }
         }
         // right 
-        if(mario.posX >= scene.posX && mario.posY >= scene.posY) {
-            mario.posX = scene.posX + scene.width
+        if(entity.posX >= scene.posX && entity.posY >= scene.posY) {
+            entity.posX = scene.posX + scene.width
+            if(entity.type == 'goomba') {
+                entity.currentDirection = entity.currentDirection=="right"?"left":"right";
+            }
         }
 
         //top
-        if(mario.posY < scene.posY && mario.posX + mario.width > scene.posX && scene.posX + scene.posY > mario.posX && mario.velY >= 0) {
-            mario.posY = scene.posY - mario.height 
-            mario.currentState = mario.states.standingAnim
-            mario.velY = 1.1
+        if(entity.posY < scene.posY && entity.posX + entity.width > scene.posX && scene.posX + scene.posY > entity.posX && entity.velY >= 0) {
+            entity.posY = scene.posY - entity.height 
+            entity.currentState = entity.states.standingAnim
+            entity.velY = 1.1
         }
         
     }
