@@ -85,14 +85,15 @@ class Game {
             animFrame: 0,
             levelBuilder: new LevelBuilder(levelOne),
             camera,
-            reset: this.reset
+            reset: this.reset,
+            userControl : true
         }
 
         entities.goombas = []
         entities.koopas = []
         preload().then(() => {
             entities.mario = new Mario(spriteSheetImage, 175, 0, 16, 19)
-            entities.mario.posX = 800
+            entities.mario.posX = 750
             levelOne.goombas.forEach(coord => {
                 entities.goombas.push(
                     new Goomba(spriteSheetImage, ...coord)
@@ -129,7 +130,10 @@ class Game {
     }
 
     reset() {
-        location.reload()
+        setTimeout(() => {
+            location.reload()
+            
+        }, 2000);
     }
 }
 const game = new Game()

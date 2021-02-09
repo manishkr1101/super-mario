@@ -1,5 +1,6 @@
 const sounds = {
-    jump: new Audio("assets/audio/sounds/jump.wav")
+    jump: new Audio("assets/audio/sounds/jump.wav"),
+    marioDead: new Audio("assets/audio/sounds/mario_death.wav")
 }
 
 for(let key in sounds) {
@@ -23,6 +24,7 @@ const input = {
     },
 
     update(gameObj) {
+        if(gameObj.userControl==false) return;
         let mario = gameObj.entities.mario
         if (this.isDown('ArrowLeft') || this.isDown('KeyA')) {
             mario.posX -= mario.velX

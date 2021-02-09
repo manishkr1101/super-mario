@@ -63,6 +63,7 @@ class Mario extends Entity {
             standLeft: new Sprite(spriteImg, 860, 21, 16, 16),
             jumpRight: new Sprite(spriteImg, 731, 5, 16, 16),
             jumpLeft: new Sprite(spriteImg, 778, 22, 16, 16),
+            dead: new Sprite(spriteImg, 748, 5, 16, 16)
         };
 
         this.states = {
@@ -94,6 +95,9 @@ class Mario extends Entity {
                 else {
                     this.sprite = this.animFrame.jumpRight;
                 }
+            },
+            deadAnim: () => {
+                this.sprite = this.animFrame.dead
             }
         }
 

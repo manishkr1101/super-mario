@@ -2,7 +2,7 @@ class Goomba extends Entity {
     constructor(spritesheet, posX, posY, width, height) {
         const sprite = new Sprite(spritesheet, 115, 5, 16, 16);
         super(sprite, 'goomba', posX, posY, width, height)
-        this.velX = 2
+        this.velX = 1.2
         this.velY = 0
         let self = this
         this.animFrame = {
@@ -36,7 +36,14 @@ class Goomba extends Entity {
                     }
                 }
             },
-            squashed: new Sprite(spritesheet, 147.5, 5, 16, 16)
+            squashed: {
+                movement() {
+                    self.velX = 0
+                },
+                animation() {
+                    self.sprite = self.animFrame.squashed
+                }
+            }
 
         }
         this.currentDirection = "left";
