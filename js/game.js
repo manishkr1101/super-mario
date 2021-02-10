@@ -45,7 +45,9 @@ const render = {
             this.drawEntity(camera, particle, gameObj)
         })
 
-        
+        gameObj.entities.coins.forEach(coin => {
+            this.drawEntity(camera, coin, gameObj)
+        })
 
     },
     drawEntities(entities, camera, gameObj) {
@@ -84,7 +86,7 @@ class Game {
         canvas.height = window.innerHeight;
         canvas.width = window.innerWidth;
         const tool = canvas.getContext("2d")
-        const entities = { scenery: [], bricks: [], particles: [], blocks: [] }
+        const entities = { scenery: [], bricks: [], particles: [], blocks: [], coins: [] }
         const camera = {
             start: 0,
             width: window.innerWidth

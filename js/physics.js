@@ -45,7 +45,10 @@ const physics = {
         blocks.forEach(block => {
             if(this.checkRectCollision(mario, block)) {
                 const wantToReveal =  this.handleDirec(block, mario)
-                if(wantToReveal) {
+                if(wantToReveal && block.currentState == block.states.fullAnim) {
+                    if(block.content == "coin") {
+                        block.createCoin(gameObj)
+                    }
                     block.currentState = block.states.emptyAnim
                 }
             }
