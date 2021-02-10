@@ -6,6 +6,7 @@ const physics = {
         this.gravity(gameObj.entities.mario)
         gameObj.entities.goombas.forEach(g => this.gravity(g))
         gameObj.entities.koopas.forEach(k => this.gravity(k))
+        gameObj.entities.particles.forEach(k => this.gravity(k))
         this.bgEntityCollision(gameObj)
 
         this.entityMarioCol(gameObj)
@@ -15,7 +16,7 @@ const physics = {
         gameObj.entities.koopas.forEach(k => this.checkFallign(k))
     },
     entityMarioCol(gameObj) {
-        const { mario, goombas, koopas, bricks } = gameObj.entities;
+        const { mario, goombas, koopas, bricks, blocks } = gameObj.entities;
         if (mario.currentState == mario.states.deadAnim) {
             return;
         }
@@ -34,9 +35,18 @@ const physics = {
             if (this.checkRectCollision(mario, brick)) {
                 const wantToBreak = this.handleDirec(brick, mario)
                 if (wantToBreak) {
-
                     let idx = gameObj.entities.bricks.indexOf(brick);
+                    brick.createParticles(gameObj)
                     gameObj.entities.bricks.splice(idx, 1);
+                }
+            }
+        })
+
+        blocks.forEach(block => {
+            if(this.checkRectCollision(mario, block)) {
+                const wantToReveal =  this.handleDirec(block, mario)
+                if(wantToReveal) {
+                    block.currentState = block.states.emptyAnim
                 }
             }
         })
@@ -170,13 +180,14 @@ const physics = {
     handleDirec(scene, entity) {
         // bottom 
         if (entity.posY > scene.posY && entity.posX + entity.width > scene.posX && scene.posX + scene.posY > entity.posX && entity.velY < 0) {
-            if (scene.type == "brick") {
-                // entity.posY = scene.posY + scene.height;
+            if (scene.type == "brick" || scene.type == "block") {
+                entity.posY = scene.posY + scene.height;
                 entity.velY = 0.1;
+                console.log(entity.posX)
                 return true;
             }
         }
-
+        
         // left
         if (entity.posX <= scene.posX && entity.posY >= scene.posY) {
             entity.posX = scene.posX - entity.width

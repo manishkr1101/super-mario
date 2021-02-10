@@ -41,6 +41,17 @@ const render = {
             this.drawEntity(camera, koopa, gameObj)
         })
 
+        gameObj.entities.particles.forEach(particle => {
+            this.drawEntity(camera, particle, gameObj)
+        })
+
+        
+
+    },
+    drawEntities(entities, camera, gameObj) {
+        entities.forEach(ent => {
+            this.drawEntity(camera, ent, gameObj)
+        })
     },
     drawEntity(camera, entity, gameObj) {
         const entityEnd = entity.posX + entity.width
@@ -73,7 +84,7 @@ class Game {
         canvas.height = window.innerHeight;
         canvas.width = window.innerWidth;
         const tool = canvas.getContext("2d")
-        const entities = { scenery: [], bricks: [] }
+        const entities = { scenery: [], bricks: [], particles: [], blocks: [] }
         const camera = {
             start: 0,
             width: window.innerWidth
@@ -92,7 +103,7 @@ class Game {
         entities.goombas = []
         entities.koopas = []
         preload().then(() => {
-            entities.mario = new Mario(spriteSheetImage, 175, 0, 16, 19)
+            entities.mario = new Mario(spriteSheetImage, 175, -20, 16, 19)
             // entities.mario.posX = 750
             levelOne.goombas.forEach(coord => {
                 entities.goombas.push(
@@ -105,7 +116,7 @@ class Game {
                 )
             });
             console.log(entities)
-            tool.scale(3, 3)
+            tool.scale(2.5, 2.5)
             render.init(gameObj)
 
             input.init();
