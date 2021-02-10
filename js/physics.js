@@ -14,7 +14,7 @@ const physics = {
         gameObj.entities.koopas.forEach(k => this.checkFallign(k))
     },
     entityMarioCol(gameObj) {
-        const { mario, goombas } = gameObj.entities;
+        const { mario, goombas, koopas } = gameObj.entities;
         if(mario.currentState == mario.states.deadAnim) {
             return;
         }
@@ -23,19 +23,64 @@ const physics = {
                 this.handleCol(mario, goomba, gameObj)
             }
         })
+        koopas.forEach(koopa => {
+            if (this.checkRectCollision(mario, koopa)) {
+                this.handleCol(mario, koopa, gameObj)
+            }
+        })
     },
     handleCol(mario, entity, gameObj) {
-        if (entity.type == "goomba") {
+        
             // top 
             if (mario.posY + mario.height > entity.posY && mario.posY < entity.posY && mario.posY + mario.height < entity.posY + entity.height && mario.velY > 0) {
-                this.enemyDeath(entity, gameObj);
+                
+                if(entity.type == "goomba") {
+                    this.enemyDeath(entity, gameObj);
+                }
+                else if(entity.type == "koopa") {
+                    if(entity.currentState == entity.states.walkingAnim) {
+                        entity.currentState = entity.states.hiding
+                        entity.posX = mario.posX + mario.width + 1
+                    }
+                    else if(entity.currentState == entity.states.hiding) {
+                        entity.currentState = entity.states.sliding
+                        entity.posX = mario.posX + mario.width + 1
+                        entity.currentDirection = "right"
+                    }
+                    else if(entity.currentState == entity.states.sliding) {
+                        this.enemyDeath(entity, gameObj);
+                    }
+                }
+                
             } else {
                 // left or right
-                if (entity.currentState != entity.states.squashed) {
-                    this.marioDeath(mario, gameObj)
+                
+                if(entity.type == "goomba") {
+                    if (entity.currentState != entity.states.squashed) {
+                        this.marioDeath(mario, gameObj)
+                    }
+                }
+                else if(entity.type == "koopa") {
+                    if(entity.currentState == entity.states.walkingAnim) {
+                        this.marioDeath(mario, gameObj)
+                    }
+                    else if(entity.currentState == entity.states.hiding) {
+                        if(mario.currentDirection == "left") {
+                            entity.posX = mario.posX - entity.width -1
+                            entity.currentDirection = "left"
+                        }
+                        else if(mario.currentDirection == "right") {
+                            entity.posX = mario.posX + mario.width + 3
+                            entity.currentDirection = "right"
+                        }
+                        entity.currentState = entity.states.sliding
+                    }
+                    else if(entity.currentState == entity.states.sliding) {
+                        this.marioDeath(mario, gameObj)
+                    }
                 }
             }
-        }
+        
 
     },
     marioDeath(mario, gameObj) {
@@ -53,6 +98,16 @@ const physics = {
                 delete gameObj.entities.goombas[idx]
             }, 200)
         }
+        else if(entity.type == "koopa") {
+            entity.currentState = entity.states.dead
+            entity.velX = 1
+            // entity.posY -= 14
+            entity.velY = -14
+            setTimeout(() => {
+                const idx = gameObj.entities.koopas.indexOf(entity)
+                delete gameObj.entities.koopas[idx]
+            }, 1000)
+        }
     },
     gravity(entity) {
         entity.velY += 1.1
@@ -67,7 +122,11 @@ const physics = {
         goombas.forEach(g => {
             this.bgCollision(g, gameObj)
         })
-        gameObj.entities.koopas.forEach(k => this.bgCollision(k, gameObj))
+        gameObj.entities.koopas.forEach(k => {
+            if(k.currentState != k.states.dead) {
+                this.bgCollision(k, gameObj)
+            }
+        })
     },
     checkCollision(entity) {
         if (entity.posY + entity.height >= groundOffset && entity.velY > 0) {

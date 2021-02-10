@@ -23,8 +23,8 @@ class Koopa extends Entity {
                 ],
                 counter: 0
             },
-            sliding:"",
-            hidding:""
+            sliding: new Sprite(spritesheet, 237.5, 14, 16, 15),
+            hiding: new Sprite(spritesheet, 237.5, 14, 16, 15)
         }
         this.states = {
             walkingAnim: {
@@ -59,11 +59,37 @@ class Koopa extends Entity {
                 }
             },
 
-            hiding() {
-
+            hiding: {
+                movement() {
+                    self.velX = 0
+                },
+                animation() {
+                    self.sprite = self.animFrame.hiding
+                    self.height = 14
+                }
             },
-            sliding() {
-
+            sliding: {
+                movement() {
+                    if(self.currentDirection == "left") {
+                        self.posX -= 2
+                    }
+                    else {
+                        self.posX += 2
+                    }
+                },
+                animation() {
+                    self.sprite = self.animFrame.sliding
+                    self.height = 14
+                }
+            },
+            dead: {
+                movement() {    
+                    self.posX += self.velX
+                },
+                animation() {
+                    self.sprite = self.animFrame.hiding
+                    self.height = 14
+                }
             }
         }
         this.currentDirection = "right";
