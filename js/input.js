@@ -30,12 +30,16 @@ const input = {
             mario.posX -= mario.velX
             mario.posX = Math.max(mario.posX, 0)
             mario.currentDirection = "left"
-            mario.currentState = mario.states.walkingAnim
+            if(mario.velY == 1.1) {
+                mario.currentState = mario.states.walkingAnim
+            }
         }
         else if (this.isDown('ArrowRight') || this.isDown('KeyD')) {
             mario.posX += mario.velX
             mario.currentDirection = "right"
-            mario.currentState = mario.states.walkingAnim
+            if(mario.velY == 1.1) {
+                mario.currentState = mario.states.walkingAnim
+            }
         }
 
         if(this.isDown('KeyX')) {
@@ -44,7 +48,7 @@ const input = {
         
         if (this.isDown("Space")) {
             if (mario.velY == 1.1) {
-                mario.velY -= 14;
+                mario.velY -= 9;
                 mario.currentState = mario.states.jumpingAnim
                 sounds.jump.play()
             }

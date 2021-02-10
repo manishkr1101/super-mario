@@ -73,7 +73,7 @@ class Game {
         canvas.height = window.innerHeight;
         canvas.width = window.innerWidth;
         const tool = canvas.getContext("2d")
-        const entities = { scenery: [] }
+        const entities = { scenery: [], bricks: [] }
         const camera = {
             start: 0,
             width: window.innerWidth
@@ -93,7 +93,7 @@ class Game {
         entities.koopas = []
         preload().then(() => {
             entities.mario = new Mario(spriteSheetImage, 175, 0, 16, 19)
-            entities.mario.posX = 750
+            // entities.mario.posX = 750
             levelOne.goombas.forEach(coord => {
                 entities.goombas.push(
                     new Goomba(spriteSheetImage, ...coord)
