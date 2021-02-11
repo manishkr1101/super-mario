@@ -37,6 +37,7 @@ const physics = {
                 if (wantToBreak) {
                     let idx = gameObj.entities.bricks.indexOf(brick);
                     brick.createParticles(gameObj)
+                    sounds.breakBrick.play()
                     gameObj.entities.bricks.splice(idx, 1);
                 }
             }
@@ -45,11 +46,14 @@ const physics = {
         blocks.forEach(block => {
             if(this.checkRectCollision(mario, block)) {
                 const wantToReveal =  this.handleDirec(block, mario)
-                if(wantToReveal && block.currentState == block.states.fullAnim) {
-                    if(block.content == "coin") {
+                if(wantToReveal) {
+                    if(block.currentState == block.states.fullAnim && block.content == "coin") {
                         block.createCoin(gameObj)
+                        block.currentState = block.states.emptyAnim
+                        sounds.coin.play()
+                    }else {
+                        sounds.bump.play()
                     }
-                    block.currentState = block.states.emptyAnim
                 }
             }
         })
@@ -119,6 +123,7 @@ const physics = {
     enemyDeath(entity, gameObj) {
         if (entity.type == "goomba") {
             entity.currentState = entity.states.squashed
+            sounds.stomp.play()
             setTimeout(() => {
                 const idx = gameObj.entities.goombas.indexOf(entity)
                 delete gameObj.entities.goombas[idx]
@@ -186,11 +191,12 @@ const physics = {
                 }
 
             }
-
         })
     },
 
     handleLevelUp(gameObj, mario) {
+        sounds.bgTheme.pause()
+        sounds.levelComplete.play()
         gameObj.userControl = false;
         // mario.posX += mario.velX
         mario.won = true;

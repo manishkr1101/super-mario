@@ -106,7 +106,8 @@ class Game {
             camera,
             reset: this.reset,
             nextLevel: this.nextLevel,
-            userControl : true
+            userControl : true,
+            sounds: true
         }
 
         entities.goombas = []
@@ -129,8 +130,9 @@ class Game {
             render.init(gameObj)
 
             input.init();
-
+            sounds.bgTheme.play()
             this.update(gameObj)
+
         })
 
 
@@ -166,8 +168,9 @@ game.init()
 
 document.addEventListener("visibilitychange", function () {
     if (document.visibilityState === 'visible') {
-
+        sounds.bgTheme.play()
     } else {
+        sounds.bgTheme.pause()
         debugger
     }
 });
