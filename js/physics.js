@@ -176,8 +176,24 @@ const physics = {
                 }
             }
 
+            if(scene.type == "flag" && entity.type == "mario" && this.checkRectCollision(scene, entity)) {
+                this.handleLevelUp(gameObj, entity)
+            }   
+            if(scene.type == "castle" && entity.type == "mario" && entity.posX >= scene.posX + scene.width/2) {
+                if(entity.won) {
+                    entity.won = false
+                    gameObj.nextLevel()
+                }
+
+            }
 
         })
+    },
+
+    handleLevelUp(gameObj, mario) {
+        gameObj.userControl = false;
+        // mario.posX += mario.velX
+        mario.won = true;
     },
     
     handleDirec(scene, entity) {
@@ -186,7 +202,6 @@ const physics = {
             if (scene.type == "brick" || scene.type == "block") {
                 entity.posY = scene.posY + scene.height;
                 entity.velY = 0.1;
-                console.log(entity.posX)
                 return true;
             }
         }

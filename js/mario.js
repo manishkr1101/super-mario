@@ -40,6 +40,7 @@ class Mario extends Entity {
         super(sprite, 'mario', posX, posY, width, height)
         this.velX = 2
         this.velY = 0
+        this.won = false
 
         this.animFrame = {
             walkRight: {
@@ -103,5 +104,14 @@ class Mario extends Entity {
 
         this.currentDirection = "right"
         this.currentState = this.states.standingAnim;
+    }
+
+    automove() {
+        if(this.won) {
+            this.currentState = this.states.walkingAnim
+            this.currentDirection = "right"
+            this.posX += this.velX/2
+        }
+        
     }
 }

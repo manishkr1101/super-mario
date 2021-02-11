@@ -48,6 +48,12 @@ const render = {
         gameObj.entities.coins.forEach(coin => {
             this.drawEntity(camera, coin, gameObj)
         })
+        if(gameObj.userControl == false) {
+            gameObj.tool.fillStyle = "black"
+            gameObj.tool.font = "bold 35pt Tahoma";
+            gameObj.tool.fillText("GAME OVER", 250, 100)
+        }
+        
 
     },
     drawEntities(entities, camera, gameObj) {
@@ -89,7 +95,7 @@ class Game {
         const entities = { scenery: [], bricks: [], particles: [], blocks: [], coins: [] }
         const camera = {
             start: 0,
-            width: window.innerWidth
+            width: window.innerWidth/2
         }
         const gameObj = {
             tool,
@@ -99,6 +105,7 @@ class Game {
             levelBuilder: new LevelBuilder(levelOne),
             camera,
             reset: this.reset,
+            nextLevel: this.nextLevel,
             userControl : true
         }
 
@@ -106,7 +113,7 @@ class Game {
         entities.koopas = []
         preload().then(() => {
             entities.mario = new Mario(spriteSheetImage, 175, -20, 16, 19)
-            // entities.mario.posX = 750
+            // entities.mario.posX = 3000
             levelOne.goombas.forEach(coord => {
                 entities.goombas.push(
                     new Goomba(spriteSheetImage, ...coord)
@@ -133,8 +140,8 @@ class Game {
         function gameloop() {
             input.update(gameObj)
             animation.update(gameObj)
-            movement.update(gameObj)
             physics.update(gameObj)
+            movement.update(gameObj)
             render.update(gameObj)
             gameObj.animFrame++
             requestAnimationFrame(gameloop)
@@ -148,11 +155,14 @@ class Game {
             
         }, 2000);
     }
+
+    nextLevel() {
+        this.reset()
+    }
 }
 const game = new Game()
 game.init()
 
-// const audio = new Audio('assets/audio/music/mario_theme.mp3')
 
 document.addEventListener("visibilitychange", function () {
     if (document.visibilityState === 'visible') {
