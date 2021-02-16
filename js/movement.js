@@ -9,6 +9,9 @@ const movement = {
         gameObj.entities.coins.forEach(coin => {
             coin.currentState.movement(gameObj)
         })
+        gameObj.entities.mushrooms.forEach(mus => {
+            mus.currentState.movement(gameObj)
+        })
         gameObj.entities.mario.automove();
     }
 }

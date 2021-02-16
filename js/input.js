@@ -16,9 +16,9 @@ const sounds = {
 
 // sounds.stomp.play()
 for(let key in sounds) {
-    sounds[key].volume = 0.9
+    sounds[key].volume = 0.01
 }
-sounds.bgTheme.volume = 0.4
+sounds.bgTheme.volume = 0
 
 const input = {
     down: {},
@@ -60,7 +60,7 @@ const input = {
             mario.velX += 1 // hack
         }
         
-        if (this.isDown("Space")) {
+        if (this.isDown("Space") || this.isDown("KeyW")) {
             if (mario.velY == 1.1) {
                 mario.velY -= 9;
                 mario.currentState = mario.states.jumpingAnim

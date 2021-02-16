@@ -7,16 +7,36 @@ const physics = {
         gameObj.entities.goombas.forEach(g => this.gravity(g))
         gameObj.entities.koopas.forEach(k => this.gravity(k))
         gameObj.entities.particles.forEach(k => this.gravity(k))
+        gameObj.entities.mushrooms.forEach(k => this.gravity(k))
+
         this.bgEntityCollision(gameObj)
 
         this.entityMarioCol(gameObj)
+        this.staticEntityCol(gameObj)
 
         this.checkFallign(gameObj.entities.mario, gameObj)
         gameObj.entities.goombas.forEach(g => this.checkFallign(g))
         gameObj.entities.koopas.forEach(k => this.checkFallign(k))
     },
+    staticEntityCol(gameObj) {
+        let { mushrooms, blocks, bricks } = gameObj.entities;
+        mushrooms.forEach((mushroom) => {
+            blocks.forEach((block) => {
+                if (this.checkRectCollision(block, mushroom)) {
+                    this.handleDirec(block, mushroom);
+                }
+            })
+        })
+        mushrooms.forEach((mushroom) => {
+            bricks.forEach((brick) => {
+                if (this.checkRectCollision(brick, mushroom)) {
+                    this.handleDirec(brick, mushroom);
+                }
+            })
+        })
+    },
     entityMarioCol(gameObj) {
-        const { mario, goombas, koopas, bricks, blocks } = gameObj.entities;
+        const { mario, goombas, koopas, bricks, blocks, mushrooms } = gameObj.entities;
         if (mario.currentState == mario.states.deadAnim) {
             return;
         }
@@ -41,20 +61,35 @@ const physics = {
                     gameObj.entities.bricks.splice(idx, 1);
                 }
             }
+            
         })
 
         blocks.forEach(block => {
-            if(this.checkRectCollision(mario, block)) {
-                const wantToReveal =  this.handleDirec(block, mario)
-                if(wantToReveal) {
-                    if(block.currentState == block.states.fullAnim && block.content == "coin") {
+            if (this.checkRectCollision(mario, block)) {
+                const wantToReveal = this.handleDirec(block, mario)
+                if (wantToReveal) {
+                    if (block.currentState == block.states.fullAnim && block.content == "coin") {
                         block.createCoin(gameObj)
                         block.currentState = block.states.emptyAnim
                         sounds.coin.play()
-                    }else {
+                    } else if (block.currentState == block.states.fullAnim && block.content == "mushroom") {
+                        block.createMushroom(gameObj)
+                        block.currentState = block.states.emptyAnim
+                        sounds.coin.play()
+                    }
+                    else {
                         sounds.bump.play()
                     }
                 }
+            }
+
+        })
+
+        mushrooms.forEach(mushroom => {
+            if(this.checkRectCollision(mushroom, mario)) {
+                let idx = mushrooms.indexOf(mushroom)
+                mushrooms.splice(idx, 1);
+                
             }
         })
     },
@@ -159,9 +194,12 @@ const physics = {
                 this.bgCollision(k, gameObj)
             }
         })
+        gameObj.entities.mushrooms.forEach(m => {
+            this.bgCollision(m, gameObj)
+        })
     },
-    
-    
+
+
     bgCollision(entity, gameObj) {
         gameObj.entities.scenery.forEach(scene => {
             if (scene.type == 'pipe' || scene.type == 'stair') {
@@ -181,11 +219,11 @@ const physics = {
                 }
             }
 
-            if(scene.type == "flag" && entity.type == "mario" && this.checkRectCollision(scene, entity)) {
+            if (scene.type == "flag" && entity.type == "mario" && this.checkRectCollision(scene, entity)) {
                 this.handleLevelUp(gameObj, entity)
-            }   
-            if(scene.type == "castle" && entity.type == "mario" && entity.posX >= scene.posX + scene.width/2) {
-                if(entity.won) {
+            }
+            if (scene.type == "castle" && entity.type == "mario" && entity.posX >= scene.posX + scene.width / 2) {
+                if (entity.won) {
                     entity.won = false
                     gameObj.nextLevel()
                 }
@@ -201,7 +239,7 @@ const physics = {
         // mario.posX += mario.velX
         mario.won = true;
     },
-    
+
     handleDirec(scene, entity) {
         // bottom 
         if (entity.posY > scene.posY && entity.posX + entity.width > scene.posX && scene.posX + scene.posY > entity.posX && entity.velY < 0) {
@@ -211,18 +249,18 @@ const physics = {
                 return true;
             }
         }
-        
+
         // left
         if (entity.posX <= scene.posX && entity.posY >= scene.posY) {
             entity.posX = scene.posX - entity.width
-            if (entity.type == 'goomba' || entity.type == "koopa") {
+            if (entity.type == 'goomba' || entity.type == "koopa" || entity.type == "mushroom") {
                 entity.currentDirection = entity.currentDirection == "right" ? "left" : "right";
             }
         }
         // right 
         if (entity.posX >= scene.posX && entity.posY >= scene.posY) {
             entity.posX = scene.posX + scene.width
-            if (entity.type == 'goomba' || entity.type == "koopa") {
+            if (entity.type == 'goomba' || entity.type == "koopa" || entity.type == "mushroom") {
                 entity.currentDirection = entity.currentDirection == "right" ? "left" : "right";
             }
         }
@@ -230,7 +268,11 @@ const physics = {
         //top
         if (entity.posY < scene.posY && entity.posX + entity.width > scene.posX && scene.posX + scene.posY > entity.posX && entity.velY >= 0) {
             entity.posY = scene.posY - entity.height
-            entity.currentState = entity.states.standingAnim
+            if(entity.type == "mushroom") {
+                
+            } else{
+                entity.currentState = entity.states.standingAnim
+            }
             entity.velY = 1.1
         }
 
@@ -240,7 +282,7 @@ const physics = {
             // entity.posY = 250
             if (entity.type == 'mario' && !entity.fallen) {
                 entity.fallen = true;
-                if(entity.currentState != entity.states.deadAnim) {
+                if (entity.currentState != entity.states.deadAnim) {
                     this.marioDeath(entity, gameObj)
                 }
                 gameObj.reset()

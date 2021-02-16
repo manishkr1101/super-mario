@@ -48,6 +48,9 @@ const render = {
         gameObj.entities.coins.forEach(coin => {
             this.drawEntity(camera, coin, gameObj)
         })
+
+        this.drawEntities(gameObj.entities.mushrooms, camera, gameObj)
+
         if(gameObj.userControl == false) {
             gameObj.tool.fillStyle = "black"
             gameObj.tool.font = "bold 35pt Tahoma";
@@ -92,7 +95,7 @@ class Game {
         canvas.height = window.innerHeight;
         canvas.width = window.innerWidth;
         const tool = canvas.getContext("2d")
-        const entities = { scenery: [], bricks: [], particles: [], blocks: [], coins: [] }
+        const entities = { scenery: [], bricks: [], particles: [], blocks: [], coins: [], mushrooms: [] }
         const camera = {
             start: 0,
             width: window.innerWidth/2
@@ -107,7 +110,7 @@ class Game {
             reset: this.reset,
             nextLevel: this.nextLevel,
             userControl : true,
-            sounds: true
+            sounds: false
         }
 
         entities.goombas = []

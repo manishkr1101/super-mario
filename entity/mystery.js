@@ -27,4 +27,13 @@ class Block extends Entity {
             gameObj.entities.coins.splice(idx, 1);
         },300);
     }
+
+    createMushroom(gameObj) {
+        const mushroom = new Mushroom(spriteSheetImage, this.posX, this.posY-this.height, this.width, this.height)
+        gameObj.entities.mushrooms.push(mushroom)
+        // setTimeout(() => {
+        //     let idx = gameObj.entities.mushrooms.indexOf(mushroom);
+        //     gameObj.entities.mushrooms.splice(idx, 1);
+        // },1300);
+    }
 }
