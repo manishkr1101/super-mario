@@ -10,3 +10,5 @@ Space, W  | Jump
 ArrowLeft, A  | Move Left
 ArrowRight, D | Move Right
 M | Toggle Mute
+\+ | Increase volume (10 level)
+\- | Decrease volume (10 level)

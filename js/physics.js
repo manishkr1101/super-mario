@@ -54,10 +54,10 @@ const physics = {
         bricks.forEach(brick => {
             if (this.checkRectCollision(mario, brick)) {
                 const wantToBreak = this.handleDirec(brick, mario)
-                if (wantToBreak) {
+                if (wantToBreak && mario.big) {
                     let idx = gameObj.entities.bricks.indexOf(brick);
                     brick.createParticles(gameObj)
-                    sounds.breakBrick.play()
+                    audio.sounds.breakBrick.play()
                     gameObj.entities.bricks.splice(idx, 1);
                 }
             }
@@ -71,14 +71,14 @@ const physics = {
                     if (block.currentState == block.states.fullAnim && block.content == "coin") {
                         block.createCoin(gameObj)
                         block.currentState = block.states.emptyAnim
-                        sounds.coin.play()
+                        audio.sounds.coin.play()
                     } else if (block.currentState == block.states.fullAnim && block.content == "mushroom") {
                         block.createMushroom(gameObj)
                         block.currentState = block.states.emptyAnim
-                        sounds.coin.play()
+                        audio.sounds.coin.play()
                     }
                     else {
-                        sounds.bump.play()
+                        audio.sounds.bump.play()
                     }
                 }
             }
@@ -89,7 +89,7 @@ const physics = {
             if(this.checkRectCollision(mushroom, mario)) {
                 let idx = mushrooms.indexOf(mushroom)
                 mushrooms.splice(idx, 1);
-                
+                mario.promote()
             }
         })
     },
@@ -122,7 +122,11 @@ const physics = {
 
             if (entity.type == "goomba") {
                 if (entity.currentState != entity.states.squashed) {
-                    this.marioDeath(mario, gameObj)
+                    if(mario.big) {
+                        mario.demote()
+                    } else{
+                        this.marioDeath(mario, gameObj)
+                    }
                 }
             }
             else if (entity.type == "koopa") {
@@ -149,16 +153,17 @@ const physics = {
 
     },
     marioDeath(mario, gameObj) {
+        if(mario.invincible) return;
         mario.velX = 0
         mario.velY = this.getVelocityForDist(100)
         gameObj.userControl = false;
         mario.currentState = mario.states.deadAnim
-        sounds.marioDead.play()
+        audio.sounds.marioDead.play()
     },
     enemyDeath(entity, gameObj) {
         if (entity.type == "goomba") {
             entity.currentState = entity.states.squashed
-            sounds.stomp.play()
+            audio.sounds.stomp.play()
             setTimeout(() => {
                 const idx = gameObj.entities.goombas.indexOf(entity)
                 delete gameObj.entities.goombas[idx]
@@ -233,8 +238,8 @@ const physics = {
     },
 
     handleLevelUp(gameObj, mario) {
-        sounds.bgTheme.pause()
-        sounds.levelComplete.play()
+        audio.sounds.bgTheme.pause()
+        audio.sounds.levelComplete.play()
         gameObj.userControl = false;
         // mario.posX += mario.velX
         mario.won = true;

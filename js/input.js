@@ -1,24 +1,4 @@
-const sounds = {
-    jump: new Audio("assets/audio/sounds/jump.wav"),
-    marioDead: new Audio("assets/audio/sounds/mario_death.wav"),
-    bgTheme: new Audio("assets/audio/music/mario_theme.mp3"),
-    levelComplete: new Audio("assets/audio/music/level_complete.mp3"),
-    breakBrick: new Audio("assets/audio/sounds/break_block.wav"),
-    stomp : new Audio("assets/audio/sounds/stomp.wav"),
-    bump : new Audio("assets/audio/sounds/bump.wav"),
-    coin : new Audio("assets/audio/sounds/coin.wav"),
-    setVolume(vol) {
-        for(let key in sounds) {
-            sounds[key].volume = vol
-        }
-    }
-}
 
-// sounds.stomp.play()
-for(let key in sounds) {
-    sounds[key].volume = 0.01
-}
-sounds.bgTheme.volume = 0
 
 const input = {
     down: {},
@@ -64,19 +44,19 @@ const input = {
             if (mario.velY == 1.1) {
                 mario.velY -= 9;
                 mario.currentState = mario.states.jumpingAnim
-                sounds.jump.play()
+                audio.sounds.jump.play()
             }
         }
 
         if(this.isPressed('KeyM')) {
-            if(gameObj.sounds) {
-                gameObj.sounds = false;
-                sounds.setVolume(0)
-            }
-            else {
-                gameObj.sounds = true;
-                sounds.setVolume(0.8)
-            }
+            audio.toggleMute()
+        }
+
+        if(this.isPressed('Equal')) {
+            audio.volumeUp()
+        }
+        else if(this.isPressed('Minus')) {
+            audio.volumeDown()
         }
     },
 

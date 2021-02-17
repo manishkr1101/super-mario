@@ -41,6 +41,8 @@ class Mario extends Entity {
         this.velX = 2
         this.velY = 0
         this.won = false
+        this.big = false
+        this.invincible = false
 
         this.animFrame = {
             walkRight: {
@@ -113,5 +115,23 @@ class Mario extends Entity {
             this.posX += this.velX/2
         }
         
+    }
+
+    promote() {
+        if(this.big) return;
+        this.height *= 1.3
+        this.width *= 1.3
+        this.big = true
+    }
+
+    demote() {
+        if(!this.big) return;
+        this.height /= 1.3
+        this.width /= 1.3
+        this.big = false
+        this.invincible = true
+        setTimeout(() => {
+            this.invincible = false
+        }, 2000)
     }
 }

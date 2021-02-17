@@ -109,14 +109,13 @@ class Game {
             camera,
             reset: this.reset,
             nextLevel: this.nextLevel,
-            userControl : true,
-            sounds: false
+            userControl : true
         }
 
         entities.goombas = []
         entities.koopas = []
         preload().then(() => {
-            entities.mario = new Mario(spriteSheetImage, 175, -20, 16, 19)
+            entities.mario = new Mario(spriteSheetImage, 175, -20, 15, 17)
             // entities.mario.posX = 3000
             levelOne.goombas.forEach(coord => {
                 entities.goombas.push(
@@ -133,7 +132,7 @@ class Game {
             render.init(gameObj)
 
             input.init();
-            sounds.bgTheme.play()
+            audio.init();
             this.update(gameObj)
 
         })
@@ -171,9 +170,9 @@ game.init()
 
 document.addEventListener("visibilitychange", function () {
     if (document.visibilityState === 'visible') {
-        sounds.bgTheme.play()
+        audio.sounds.bgTheme.play()
     } else {
-        sounds.bgTheme.pause()
+        audio.sounds.bgTheme.pause()
         debugger
     }
 });
