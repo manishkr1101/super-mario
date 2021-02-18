@@ -51,31 +51,22 @@ const physics = {
             }
         })
 
-        bricks.forEach(brick => {
-            if (this.checkRectCollision(mario, brick)) {
-                const wantToBreak = this.handleDirec(brick, mario)
-                if (wantToBreak && mario.big) {
-                    let idx = gameObj.entities.bricks.indexOf(brick);
-                    brick.createParticles(gameObj)
-                    audio.sounds.breakBrick.play()
-                    gameObj.entities.bricks.splice(idx, 1);
-                }
-            }
-            
-        })
-
+        
+        
         blocks.forEach(block => {
             if (this.checkRectCollision(mario, block)) {
                 const wantToReveal = this.handleDirec(block, mario)
                 if (wantToReveal) {
-                    if (block.currentState == block.states.fullAnim && block.content == "coin") {
-                        block.createCoin(gameObj)
-                        block.currentState = block.states.emptyAnim
+                    if (block.currentState == block.states.fullAnim) {
+                        if(block.content == "coin") {
+                            block.createCoin(gameObj)
+                        }
+                        else if(block.content == "mushroom") {
+                            block.createMushroom(gameObj)
+                        }
+                        audio.sounds.coin.pause()
                         audio.sounds.coin.play()
-                    } else if (block.currentState == block.states.fullAnim && block.content == "mushroom") {
-                        block.createMushroom(gameObj)
                         block.currentState = block.states.emptyAnim
-                        audio.sounds.coin.play()
                     }
                     else {
                         audio.sounds.bump.play()
@@ -83,6 +74,25 @@ const physics = {
                 }
             }
 
+        })
+
+        bricks.forEach(brick => {
+            if (this.checkRectCollision(mario, brick)) {
+                const wantToBreak = this.handleDirec(brick, mario)
+                if (wantToBreak) {
+                    if(mario.big) {
+                        let idx = gameObj.entities.bricks.indexOf(brick);
+                        brick.createParticles(gameObj)
+                        audio.sounds.breakBrick.play()
+                        gameObj.entities.bricks.splice(idx, 1);
+                    }
+                    else {
+                        audio.sounds.bump.play()
+                    }
+                    
+                }
+            }
+            
         })
 
         mushrooms.forEach(mushroom => {
@@ -248,10 +258,15 @@ const physics = {
     handleDirec(scene, entity) {
         // bottom 
         if (entity.posY > scene.posY && entity.posX + entity.width > scene.posX && scene.posX + scene.posY > entity.posX && entity.velY < 0) {
-            if (scene.type == "brick" || scene.type == "block") {
-                entity.posY = scene.posY + scene.height;
-                entity.velY = 0.1;
-                return true;
+            if(scene.posX-entity.width/2 < entity.posX && entity.posX < scene.posX-entity.width/2+scene.width) {
+
+                bottom = true;
+                if (scene.type == "brick" || scene.type == "block") {
+                    entity.posY = scene.posY + scene.height;
+                    entity.velY = 0.1;
+                    return true;
+                }
+                return false;
             }
         }
 
@@ -298,6 +313,7 @@ const physics = {
     },
     checkRectCollision(scene, entity) {
         //x->r2>l1&&l2<r1
+        
         let l1 = scene.posX;
         let l2 = entity.posX;
         let r1 = scene.posX + scene.width;
@@ -308,6 +324,9 @@ const physics = {
         let b2 = entity.posY;
         // y-> t2>b1&&t1>b2
         if (r2 > l1 && l2 < r1 && t2 > b1 && t1 > b2) {
+            if(scene.type == "mario" && entity.type == "brick") {
+                console.log(scene.type)
+            }
             return true;
         }
         return false;

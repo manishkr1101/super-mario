@@ -13,11 +13,11 @@ const audio = {
     },
     setVolume(vol) {
         for(let key in this.sounds) {
-            this.sounds[key].volume = this.volume
+            this.sounds[key].volume = vol
         }
     },
     init() {
-        this.setVolume(0.5)
+        this.setVolume(this.volume)
         setTimeout(() => {
             this.sounds.bgTheme.play()
         }, 1000)
